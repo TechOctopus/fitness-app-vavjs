@@ -1,35 +1,35 @@
-export const Carstable = ({ cars, deleteCar }) => {
-  console.log(cars);
-  return (
-    <table>
-      <thead>
+import { CarDialog } from "./CarDialog";
+
+export const CarsTable = ({ cars, deleteCar, updateCar }) => (
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Image</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {cars.length === 0 ? (
         <tr>
-          <th>Name</th>
-          <th>Price</th>
-          <th>Image</th>
-          <th>Actions</th>
+          <td colSpan="4">No data</td>
         </tr>
-      </thead>
-      <tbody>
-        {cars.length === 0 ? (
-          <tr>
-            <td colSpan="3">No data</td>
+      ) : (
+        cars.map((car) => (
+          <tr key={car.id}>
+            <td>{car.name}</td>
+            <td>{car.price}</td>
+            <td>
+              <img src={car.img} alt={car.name} style={{ width: "100px" }} />
+            </td>
+            <td>
+              <button onClick={() => deleteCar(car.id)}>Delete</button>
+              <CarDialog car={car} updateCar={updateCar} />
+            </td>
           </tr>
-        ) : (
-          cars.map((car) => (
-            <tr key={car.id}>
-              <td>{car.name}</td>
-              <td>{car.price}</td>
-              <td>
-                <img src={car.img} alt={car.name} style={{ width: "100px" }} />
-              </td>
-              <td>
-                <button onClick={() => deleteCar(car.id)}>Delete</button>
-              </td>
-            </tr>
-          ))
-        )}
-      </tbody>
-    </table>
-  );
-};
+        ))
+      )}
+    </tbody>
+  </table>
+);

@@ -7,7 +7,7 @@ export async function api(url, method = "GET", data = {}) {
       },
     };
 
-    if (method !== "GET") {
+    if (method !== "GET" && method !== "DELETE") {
       options.body = JSON.stringify(data);
     }
 

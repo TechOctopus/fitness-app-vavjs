@@ -1,7 +1,7 @@
-import { Dashboard } from "./components/Dashboard";
+import { CarsDashboard } from "./components/CarsDashboard";
 
 function App() {
-  return <Dashboard />;
+  return <CarsDashboard />;
 }
 
 export default App;
