@@ -7,6 +7,11 @@ export async function api(url, method = "GET", data = {}) {
       },
     };
 
+    const token = localStorage.getItem("token");
+    if (token) {
+      options.headers.Authorization = `Bearer ${token}`;
+    }
+
     if (method !== "GET" && method !== "DELETE") {
       options.body = JSON.stringify(data);
     }
@@ -20,5 +25,6 @@ export async function api(url, method = "GET", data = {}) {
     return result;
   } catch (error) {
     console.error(error);
+    return null;
   }
 }
