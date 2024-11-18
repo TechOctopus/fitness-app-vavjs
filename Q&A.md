@@ -4,5 +4,9 @@ nginx for 8080
 https://www.npmjs.com/package/jsonwebtoken
 https://tailwindcss.com/
 vite + React https://vite.dev/
+?? react-charts
+
+How to:
+start db before starting the server
 
 q&a logic

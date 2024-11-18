@@ -7,9 +7,9 @@ export default function MeasurementsPage() {
 
   useEffect(() => {
     (async () => {
-      await api("methods").then((methods = setMethods(methods)));
-      await api("measurements").then(
-        (measurements = setMeasurements(measurements))
+      await api("methods").then((methods) => setMethods(methods));
+      await api("measurements").then((measurements) =>
+        setMeasurements(measurements)
       );
     })();
   }, []);
