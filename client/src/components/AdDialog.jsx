@@ -23,36 +23,26 @@ export const AdDialog = ({ ad, handleUpdateAd }) => {
     <>
       <button onClick={() => setOpen(!open)}>Update</button>
       <dialog open={open}>
-        <div className="max-w-sm p-4 shadow-md rounded flex flex-col gap-4">
+        <div className="p-4 shadow-md rounded flex flex-col gap-4">
           <p>Update Ad</p>
-          <form
-            onSubmit={(event) => updateAdForm(event)}
-            className="flex flex-col gap-4"
-          >
+          <form onSubmit={(event) => updateAdForm(event)}>
             <label htmlFor="image">Image</label>
-            <input
+            <textarea
               id="image"
-              type="text"
               value={image}
               onChange={(event) => setImage(event.target.value)}
             />
             <label htmlFor="link">Link</label>
-            <input
+            <textarea
               id="link"
-              type="text"
               value={link}
               onChange={(event) => setLink(event.target.value)}
             />
-            <button type="submit" className="bg-blue-500 text-white rounded">
+            <button type="submit" className="btn-success">
               Save
             </button>
           </form>
-          <button
-            onClick={() => closeDialog()}
-            className="bg-red-500 text-white rounded"
-          >
-            Cancel
-          </button>
+          <button onClick={() => closeDialog()}>Cancel</button>
         </div>
       </dialog>
     </>

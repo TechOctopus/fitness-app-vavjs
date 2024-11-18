@@ -46,11 +46,16 @@ app.post("/login", async (req, res) => {
   try {
     const { name, password } = req.body;
 
+    console.log("name", name);
+    console.log("password", password);
+
     if (!name || !password) {
       return res.status(400).json({ message: "failed" });
     }
 
     const user = await User.findOne({ where: { name, password } });
+
+    console.log("user", user);
     if (!user) {
       return res.status(401).json({ message: "failed" });
     }
@@ -90,8 +95,31 @@ app.get("/users", authenticate, admin, async (req, res) => {
   res.json(users);
 });
 
-app.post("/users", authenticate, admin, async (req, res) => {
-  const { users } = req.body;
+app.get("/users/export", authenticate, admin, async (req, res) => {
+  const users = await User.findAll({ where: { name: { [Op.ne]: "admin" } } });
+  const csv = users
+    .map(
+      (user) =>
+        `${user.email},${user.name},${user.password},${user.age},${user.height}`
+    )
+    .join("\n");
+  res.set("Content-Type", "text/csv");
+  res.send(csv);
+});
+
+app.post("/users/import", authenticate, admin, async (req, res) => {
+  const { data } = req.body;
+  const users = data
+    .split("\n")
+    .map((line) => line.split(","))
+    .map(([email, name, password, age, height]) => ({
+      email,
+      name,
+      password,
+      age,
+      height,
+    }));
+
   await User.destroy({ where: { name: { [Op.ne]: "admin" } } });
   const newUsers = await User.bulkCreate(users);
   res.json(newUsers);

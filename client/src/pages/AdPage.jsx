@@ -9,6 +9,12 @@ export default function AdPage() {
     (async () => {
       await api("ad").then((ad) => setAd(ad));
     })();
+
+    const interval = setInterval(() => {
+      setAdDialog(true);
+    }, 60000);
+
+    return () => clearInterval(interval);
   }, []);
 
   async function handleClick() {
@@ -17,13 +23,13 @@ export default function AdPage() {
     setAdDialog(!adDialog);
   }
 
-  setInterval(() => {
-    setAdDialog(true);
-  }, 60000);
-
   return (
     <div>
       <h1>Ad Page</h1>
+      <p className="pt-4">
+        At this page, you can view an ad every minute. If you click on the ad,
+        you will be redirected to the ad's target URL.
+      </p>
       <dialog open={adDialog}>
         <div className="max-w-sm p-4 shadow-md rounded flex flex-col gap-4">
           <p>Ad</p>

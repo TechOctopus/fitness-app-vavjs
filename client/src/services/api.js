@@ -21,8 +21,11 @@ export async function api(url, method = "GET", data = {}) {
       throw new Error("Network response was not ok");
     }
 
-    const result = await response.json();
-    return result;
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      return await response.json();
+    }
+    return await response.text();
   } catch (error) {
     console.error(error);
     return null;

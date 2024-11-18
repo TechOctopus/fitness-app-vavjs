@@ -8,7 +8,7 @@ import StatisticsPage from "./pages/StatisticsPage";
 import AdminPage from "./pages/AdminPage";
 import AdPage from "./pages/AdPage";
 
-import AuthLayout from "./layouts/AuthLayout";
+import MailLayout from "./layouts/MailLayout";
 
 import { api } from "./services/api";
 
@@ -27,7 +27,7 @@ async function requireAuth() {
   if (!user) {
     return redirect("/login");
   }
-  return null;
+  return user;
 }
 
 async function requireUnauth() {
@@ -38,25 +38,25 @@ async function requireUnauth() {
   return null;
 }
 
+async function requireAdmin() {
+  const user = await api("me");
+  if (!user || user.name !== "admin") {
+    return redirect("/login");
+  }
+  return user;
+}
+
 export default (
   <Route>
     <Route path="/" loader={handleRedirect} />
     <Route path="/login" element={<LoginPage />} loader={requireUnauth} />
     <Route path="/register" element={<RegisterPage />} loader={requireUnauth} />
-    <Route element={<AuthLayout />}>
-      <Route
-        path="/measurements"
-        element={<MeasurementsPage />}
-        loader={requireAuth}
-      />
-      <Route path="/methods" element={<MethodsPage />} loader={requireAuth} />
-      <Route
-        path="/statistics"
-        element={<StatisticsPage />}
-        loader={requireAuth}
-      />
-      <Route path="/ad" element={<AdPage />} loader={requireAuth} />
+    <Route element={<MailLayout />} loader={requireAuth}>
+      <Route path="/measurements" element={<MeasurementsPage />} />
+      <Route path="/methods" element={<MethodsPage />} />
+      <Route path="/statistics" element={<StatisticsPage />} />
+      <Route path="/ad" element={<AdPage />} />
+      <Route path="/admin" element={<AdminPage />} loader={requireAdmin} />
     </Route>
-    <Route path="/admin" element={<AdminPage />} loader={requireAuth} />
   </Route>
 );

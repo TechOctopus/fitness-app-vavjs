@@ -14,10 +14,20 @@ export default function MeasurementsPage() {
     })();
   }, []);
 
+  const type = ["weight", "lower pressure", "upper pressure"];
+
   return (
     <div>
-      <h1>Crafting Measurements</h1>
+      <h1>Create Measurement</h1>
       <form>
+        <label>Measurement:</label>
+        <select>
+          {type.map((type) => (
+            <option key={type} value={type}>
+              {type}
+            </option>
+          ))}
+        </select>
         <label>Method:</label>
         <select>
           {methods.map((method) => (

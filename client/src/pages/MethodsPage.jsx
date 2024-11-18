@@ -33,22 +33,20 @@ export default function MethodsPage() {
     <div>
       <h1>Methods Page</h1>
 
-      <form onSubmit={(event) => handleCreate(event)}>
+      <form
+        onSubmit={async (event) => await handleCreate(event)}
+        className="pt-4"
+      >
         <label>Name:</label>
         <input type="text" name="name" />
 
         <label>Description:</label>
         <input type="text" name="description" />
 
-        <button
-          type="submit"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        >
-          Create
-        </button>
+        <button type="submit">Create</button>
       </form>
 
-      <table>
+      <table className="mt-8">
         <thead>
           <tr>
             <th>Name</th>
@@ -57,6 +55,11 @@ export default function MethodsPage() {
           </tr>
         </thead>
         <tbody>
+          {methods.length === 0 && (
+            <tr>
+              <td colSpan="3">No methods found</td>
+            </tr>
+          )}
           {methods.map((method) => (
             <tr key={method.id}>
               <td>{method.name}</td>
