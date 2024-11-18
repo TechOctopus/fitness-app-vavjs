@@ -60,8 +60,8 @@ const Method = sequelize.define(
   }
 );
 
-const Measurement = sequelize.define(
-  "Measurement",
+const Weight = sequelize.define(
+  "Weight",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -92,7 +92,79 @@ const Measurement = sequelize.define(
     },
   },
   {
-    tableName: "measurements",
+    tableName: "weights",
+  }
+);
+
+const Systolic = sequelize.define(
+  "Systolic",
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    date: {
+      type: DataTypes.DATEONLY,
+    },
+    value: {
+      type: DataTypes.INTEGER,
+    },
+    method_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: "methods",
+        key: "id",
+      },
+    },
+    user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: "users",
+        key: "id",
+      },
+    },
+  },
+  {
+    tableName: "systolics",
+  }
+);
+
+const Diastolic = sequelize.define(
+  "Diastolic",
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    date: {
+      type: DataTypes.DATEONLY,
+    },
+    value: {
+      type: DataTypes.INTEGER,
+    },
+    method_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: "methods",
+        key: "id",
+      },
+    },
+    user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: "users",
+        key: "id",
+      },
+    },
+  },
+  {
+    tableName: "diastolics",
   }
 );
 
@@ -120,11 +192,23 @@ const Ad = sequelize.define(
   }
 );
 
-User.hasMany(Measurement, { foreignKey: "user_id" });
-Measurement.belongsTo(User, { foreignKey: "user_id" });
+User.hasMany(Weight, { foreignKey: "user_id" });
+Weight.belongsTo(User, { foreignKey: "user_id" });
 
-Method.hasMany(Measurement, { foreignKey: "method_id" });
-Measurement.belongsTo(Method, { foreignKey: "method_id" });
+User.hasMany(Systolic, { foreignKey: "user_id" });
+Systolic.belongsTo(User, { foreignKey: "user_id" });
+
+User.hasMany(Diastolic, { foreignKey: "user_id" });
+Diastolic.belongsTo(User, { foreignKey: "user_id" });
+
+Method.hasMany(Weight, { foreignKey: "method_id" });
+Weight.belongsTo(Method, { foreignKey: "method_id" });
+
+Method.hasMany(Systolic, { foreignKey: "method_id" });
+Systolic.belongsTo(Method, { foreignKey: "method_id" });
+
+Method.hasMany(Diastolic, { foreignKey: "method_id" });
+Diastolic.belongsTo(Method, { foreignKey: "method_id" });
 
 async function connect() {
   try {
@@ -147,4 +231,4 @@ async function connect() {
   }
 }
 
-export { sequelize, User, Method, Measurement, Ad, connect };
+export { sequelize, User, Method, Weight, Systolic, Diastolic, Ad, connect };

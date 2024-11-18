@@ -33,12 +33,16 @@ export default function AdPage() {
       <dialog open={adDialog}>
         <div className="max-w-sm p-4 shadow-md rounded flex flex-col gap-4">
           <p>Ad</p>
-          <img
-            src={ad.image_url}
-            alt="ad"
+          <img src={ad.image_url} alt="ad" className="h-20" />
+          <a
+            href={ad.target_url}
+            target="_blank"
+            rel="noreferrer"
             onClick={handleClick}
-            className="h-20"
-          />
+            className="text-blue-500 hover:text-blue-700 underline"
+          >
+            Go to ad
+          </a>
           <button onClick={() => setAdDialog(!adDialog)}>Close</button>
         </div>
       </dialog>

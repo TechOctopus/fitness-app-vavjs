@@ -14,7 +14,7 @@ export default function MeasurementsPage() {
     })();
   }, []);
 
-  const type = ["weight", "lower pressure", "upper pressure"];
+  const type = ["Weight", "Systolic pressure", "Diastolic pressure"];
 
   return (
     <div>
