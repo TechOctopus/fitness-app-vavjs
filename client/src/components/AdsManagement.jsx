@@ -32,7 +32,11 @@ export default function AdsManagement() {
           {ads.map((ad) => (
             <tr key={ad.id}>
               <td>
-                <img src={ad.image_url} alt={ad.image_url} className="h-20" />
+                <img
+                  src={ad.image_url}
+                  alt={ad.image_url}
+                  className="w-full max-h-20 max-w-20"
+                />
               </td>
               <td>{ad.target_url}</td>
               <td>{ad.click_count}</td>

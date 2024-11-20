@@ -2,34 +2,61 @@ import { useState, useEffect } from "react";
 import { api } from "../services/api";
 
 export default function MeasurementsPage() {
-  const [measurements, setMeasurements] = useState([]);
   const [methods, setMethods] = useState([]);
 
   useEffect(() => {
     (async () => {
       await api("methods").then((methods) => setMethods(methods));
-      await api("measurements").then((measurements) =>
-        setMeasurements(measurements)
-      );
     })();
   }, []);
 
-  const type = ["Weight", "Systolic pressure", "Diastolic pressure"];
+  const type = [
+    {
+      name: "Weight",
+      key: "weight",
+    },
+    {
+      name: "Systolic pressure",
+      key: "systolic",
+    },
+    {
+      name: "Diastolic pressure",
+      key: "diastolic",
+    },
+  ];
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+
+    const measurement = event.target[0].value;
+    const methodId = event.target[1].value;
+    const value = event.target[2].value;
+    const date = event.target[3].value;
+
+    event.target.reset();
+
+    await api("measurement", "POST", {
+      measurement,
+      methodId,
+      value,
+      date,
+    });
+  }
 
   return (
     <div>
       <h1>Create Measurement</h1>
-      <form>
+      <form onSubmit={async (event) => handleSubmit(event)}>
         <label>Measurement:</label>
-        <select>
+        <select required>
           {type.map((type) => (
-            <option key={type} value={type}>
-              {type}
+            <option key={type.key} value={type.key}>
+              {type.name}
             </option>
           ))}
         </select>
         <label>Method:</label>
-        <select>
+        <select required>
           {methods.map((method) => (
             <option key={method.id} value={method.id}>
               {method.name}
@@ -38,14 +65,12 @@ export default function MeasurementsPage() {
         </select>
 
         <label>Value:</label>
-        <input type="text" name="value" />
+        <input type="text" name="value" required />
 
-        <button
-          type="submit"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        >
-          Create
-        </button>
+        <label>Date:</label>
+        <input type="date" name="date" required />
+
+        <button type="submit">Create</button>
       </form>
     </div>
   );

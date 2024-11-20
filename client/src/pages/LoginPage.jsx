@@ -11,7 +11,6 @@ export default function LoginPage() {
     event.target.reset();
     if (!name.trim() || !password.trim()) return;
     api("login", "POST", { name, password }).then((result) => {
-      console.log("result", result);
       if (result) {
         localStorage.setItem("token", result.token);
         navigate("/measurements");

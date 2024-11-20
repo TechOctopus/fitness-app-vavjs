@@ -8,7 +8,7 @@ import StatisticsPage from "./pages/StatisticsPage";
 import AdminPage from "./pages/AdminPage";
 import AdPage from "./pages/AdPage";
 
-import MailLayout from "./layouts/MailLayout";
+import MainLayout from "./layouts/MainLayout";
 
 import { api } from "./services/api";
 
@@ -51,7 +51,7 @@ export default (
     <Route path="/" loader={handleRedirect} />
     <Route path="/login" element={<LoginPage />} loader={requireUnauth} />
     <Route path="/register" element={<RegisterPage />} loader={requireUnauth} />
-    <Route element={<MailLayout />} loader={requireAuth}>
+    <Route element={<MainLayout />} loader={requireAuth}>
       <Route path="/measurements" element={<MeasurementsPage />} />
       <Route path="/methods" element={<MethodsPage />} />
       <Route path="/statistics" element={<StatisticsPage />} />

@@ -1,4 +1,6 @@
 import { Sequelize, DataTypes } from "sequelize";
+import pg from "pg";
+import { hash } from "./password.js";
 
 const database = "app";
 const user = "postgres";
@@ -210,25 +212,105 @@ Systolic.belongsTo(Method, { foreignKey: "method_id" });
 Method.hasMany(Diastolic, { foreignKey: "method_id" });
 Diastolic.belongsTo(Method, { foreignKey: "method_id" });
 
-async function connect() {
+async function connectToDB() {
   try {
+    const client = new pg.Client({
+      user: "postgres",
+      host: "db",
+      database: "postgres",
+      password: "postgres",
+      port: 5432,
+    });
+
+    await client.connect();
+    await client.query(`DROP DATABASE IF EXISTS ${database}`);
+    await client.query(`CREATE DATABASE ${database}`);
+    await client.end();
+
     await sequelize.authenticate();
     await sequelize.sync();
 
-    // create admin user if not exists
-    const admin = await User.findOne({ where: { email: "admin@localhost" } });
-    if (!admin) {
-      await User.create({
-        email: "admin@localhost",
-        name: "admin",
-        password: "admin",
-        age: 30,
-      });
-    }
+    await User.create({
+      email: "admin@localhost",
+      name: "admin",
+      password: hash("admin"),
+      age: 30,
+    });
+
+    await Ad.create({
+      // License(s): CC-BY 4.0
+      image_url:
+        "https://opengameart.org/sites/default/files/pixel_art_flat_text_fonts_-_preview.png",
+      target_url: "https://opengameart.org/content/pixel-art-flat-text-fonts",
+    });
+
+    await Method.create({
+      name: "Manual",
+      description: "Measurements done manually",
+    });
+
+    await Weight.create({
+      date: new Date("2021-01-01"),
+      value: 40,
+      user_id: 1,
+      method_id: 1,
+    });
+
+    await Weight.create({
+      date: new Date("2002-01-02"),
+      value: 20,
+      user_id: 1,
+      method_id: 1,
+    });
+
+    await Weight.create({
+      date: new Date("2022-01-03"),
+      value: 70,
+      user_id: 1,
+      method_id: 1,
+    });
+
+    await Weight.create({
+      date: new Date("2004-01-03"),
+      value: 10,
+      user_id: 1,
+      method_id: 1,
+    });
+
+    await Weight.create({
+      date: new Date("2008-01-03"),
+      value: 22,
+      user_id: 1,
+      method_id: 1,
+    });
+
+    await Weight.create({
+      date: new Date("2012-01-03"),
+      value: 32,
+      user_id: 1,
+      method_id: 1,
+    });
+
+    await Weight.create({
+      date: new Date("2001-01-03"),
+      value: 4,
+      user_id: 1,
+      method_id: 1,
+    });
+
     console.log("Connection has been established successfully.");
   } catch (error) {
     console.error("Unable to connect to the database:", error);
   }
 }
 
-export { sequelize, User, Method, Weight, Systolic, Diastolic, Ad, connect };
+export {
+  sequelize,
+  User,
+  Method,
+  Weight,
+  Systolic,
+  Diastolic,
+  Ad,
+  connectToDB,
+};

@@ -2,12 +2,13 @@ import { useState, useEffect } from "react";
 import { api } from "../services/api";
 
 export default function AdPage() {
-  const [ad, setAd] = useState({});
+  const [ad, setAd] = useState(null);
   const [adDialog, setAdDialog] = useState(true);
 
   useEffect(() => {
     (async () => {
       await api("ad").then((ad) => setAd(ad));
+      console.log(ad);
     })();
 
     const interval = setInterval(() => {
@@ -31,18 +32,24 @@ export default function AdPage() {
         you will be redirected to the ad's target URL.
       </p>
       <dialog open={adDialog}>
-        <div className="max-w-sm p-4 shadow-md rounded flex flex-col gap-4">
+        <div className="p-4 shadow-md rounded flex flex-col gap-4">
           <p>Ad</p>
-          <img src={ad.image_url} alt="ad" className="h-20" />
-          <a
-            href={ad.target_url}
-            target="_blank"
-            rel="noreferrer"
-            onClick={handleClick}
-            className="text-blue-500 hover:text-blue-700 underline"
-          >
-            Go to ad
-          </a>
+          {!ad ? (
+            <p>No ad available</p>
+          ) : (
+            <>
+              <img src={ad.image_url} alt="ad" className="h-40 max-w-40" />
+              <a
+                href={ad.target_url}
+                target="_blank"
+                rel="noreferrer"
+                onClick={handleClick}
+                className="text-blue-500 hover:text-blue-700 underline"
+              >
+                Go to ad
+              </a>
+            </>
+          )}
           <button onClick={() => setAdDialog(!adDialog)}>Close</button>
         </div>
       </dialog>
