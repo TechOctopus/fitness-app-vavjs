@@ -1,12 +1,10 @@
 Can i use:
 
 nginx for 8080
+vite + React https://vite.dev/
 https://www.npmjs.com/package/jsonwebtoken
 https://tailwindcss.com/
-vite + React https://vite.dev/
-?? react-charts
+https://www.chartjs.org/
 
 How to:
-start db before starting the server
-
 q&a logic
