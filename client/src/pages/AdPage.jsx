@@ -8,7 +8,6 @@ export default function AdPage() {
   useEffect(() => {
     (async () => {
       await api("ad").then((ad) => setAd(ad));
-      console.log(ad);
     })();
 
     const interval = setInterval(() => {

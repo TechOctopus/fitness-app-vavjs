@@ -231,7 +231,7 @@ async function connectToDB() {
     await sequelize.sync();
 
     await User.create({
-      email: "admin@localhost",
+      email: "admin",
       name: "admin",
       password: hash("admin"),
       age: 30,

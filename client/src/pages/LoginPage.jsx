@@ -6,11 +6,11 @@ export default function LoginPage() {
 
   function handleLogin(event) {
     event.preventDefault();
-    const name = event.target[0].value;
+    const email = event.target[0].value;
     const password = event.target[1].value;
     event.target.reset();
-    if (!name.trim() || !password.trim()) return;
-    api("login", "POST", { name, password }).then((result) => {
+    if (!email.trim() || !password.trim()) return;
+    api("login", "POST", { email, password }).then((result) => {
       if (result) {
         localStorage.setItem("token", result.token);
         navigate("/measurements");
@@ -22,8 +22,8 @@ export default function LoginPage() {
     <main className="flex flex-col items-center justify-center h-screen">
       <h1>Login</h1>
       <form onSubmit={(event) => handleLogin(event)}>
-        <label htmlFor="name">Name</label>
-        <input type="text" placeholder="Name" />
+        <label htmlFor="email">Email</label>
+        <input type="text" placeholder="Email" />
         <label htmlFor="password">Password</label>
         <input type="password" placeholder="Password" />
         <button type="submit">Login</button>

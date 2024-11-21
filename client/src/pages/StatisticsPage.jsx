@@ -28,13 +28,19 @@ export default function StatisticsPage() {
         `measurements?filter=${filter.name}&methodName=${filter.methodName}&startDate=${filter.startDate}&endDate=${filter.endDate}`
       ).then((data) => {
         setMeasurements(data);
-        const startDate = new Date(data[0].date);
-        const endDate = new Date(data[data.length - 1].date);
+        const startDate =
+          data.length === 0
+            ? ""
+            : new Date(data[0].date).toISOString().split("T")[0];
+        const endDate =
+          data.length === 0
+            ? ""
+            : new Date(data[data.length - 1].date).toISOString().split("T")[0];
 
         setFilter({
           ...filter,
-          startDate: startDate.toISOString().split("T")[0],
-          endDate: endDate.toISOString().split("T")[0],
+          startDate: startDate,
+          endDate: endDate,
         });
       });
     })();
@@ -63,7 +69,7 @@ export default function StatisticsPage() {
           onChange={(event) =>
             setFilter({ ...filter, name: event.target.value })
           }
-          value={filter}
+          value={filter.name}
         >
           <option value="weight">Weight</option>
           <option value="systolic">Systolic pressure</option>

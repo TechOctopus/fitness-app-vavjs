@@ -10,14 +10,14 @@ export const authRouter = Router();
 
 authRouter.post("/login", async (req, res) => {
   try {
-    const { name, password } = req.body;
+    const { email, password } = req.body;
 
-    if (!name || !password) {
+    if (!email || !password) {
       return res.status(400).json({ message: "failed" });
     }
 
     const user = await User.findOne({
-      where: { name },
+      where: { email },
     });
 
     if (!user || !verify(password, user.password)) {
