@@ -16,7 +16,7 @@ export async function api(url, method = "GET", data = {}) {
       options.body = JSON.stringify(data);
     }
 
-    const response = await fetch(`http://localhost:3333/${url}`, options);
+    const response = await fetch(`http://localhost:8080/api/${url}`, options);
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }

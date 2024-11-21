@@ -3,75 +3,83 @@ import { Router } from "express";
 import { userAuthMidalware } from "../midalware/AuthMidalware.js";
 import { Weight, Systolic, Diastolic, Method } from "../db.js";
 
+import { Op } from "sequelize";
+
 export const measurementRouter = Router();
 
 measurementRouter.get("/measurements", userAuthMidalware, async (req, res) => {
-  const weights = await Weight.findAll({
+  const { filter, methodName, startDate, endDate } = req.query;
+
+  const optObj = {
     where: { user_id: req.user.id },
-  });
+    order: [["date", "ASC"]],
+    include: [
+      {
+        model: Method,
+        attributes: ["name"],
+      },
+    ],
+  };
 
-  const weightToSent = await Promise.all(
-    weights.map(async (w) => {
-      const method = await Method.findByPk(w.method_id);
-      return {
-        name: "Weight",
-        value: w.value,
-        date: w.date,
-        method: method.name,
-      };
-    })
-  );
+  if (startDate && endDate) {
+    optObj.where.date = {
+      [Op.between]: [startDate, endDate],
+    };
+  }
 
-  const systolics = await Systolic.findAll({
-    where: { user_id: req.user.id },
-  });
+  if (methodName && methodName !== "all") {
+    optObj.include[0].where = { name: methodName };
+  }
 
-  const systolicToSent = await Promise.all(
-    systolics.map(async (s) => {
-      const method = await Method.findByPk(s.method_id);
-      return {
-        name: "Systolic pressure",
-        value: s.value,
-        date: s.date,
-        method: method.name,
-      };
-    })
-  );
+  switch (filter) {
+    case "weight": {
+      const weights = await Weight.findAll(optObj);
 
-  const diastolics = await Diastolic.findAll({
-    where: { user_id: req.user.id },
-  });
-
-  const diastolicToSent = await Promise.all(
-    diastolics.map(async (d) => {
-      const method = await Method.findByPk(d.method_id);
-      return {
-        name: "Diastolic pressure",
-        value: d.value,
-        date: d.date,
-        method: method.name,
-      };
-    })
-  );
-
-  const toSend = [...weightToSent, ...systolicToSent, ...diastolicToSent].sort(
-    (a, b) => {
-      const dateA = new Date(a.date);
-      const dateB = new Date(b.date);
-
-      if (dateA < dateB) {
-        return -1;
-      }
-
-      if (dateA > dateB) {
-        return 1;
-      }
-
-      return 0;
+      res.json(
+        weights.map((w) => {
+          return {
+            name: "Weight",
+            value: w.value,
+            date: w.date,
+            method: w.Method.name,
+          };
+        })
+      );
+      break;
     }
-  );
 
-  res.json(toSend);
+    case "systolic": {
+      const systolics = await Systolic.findAll(optObj);
+
+      res.json(
+        systolics.map((s) => {
+          return {
+            name: "Systolic pressure",
+            value: s.value,
+            date: s.date,
+            method: s.Method.name,
+          };
+        })
+      );
+      break;
+    }
+
+    case "diastolic": {
+      const diastolics = await Diastolic.findAll(optObj);
+
+      res.json(
+        diastolics.map((d) => {
+          return {
+            name: "Diastolic pressure",
+            value: d.value,
+            date: d.date,
+            method: d.Method.name,
+          };
+        })
+      );
+      break;
+    }
+  }
 });
 
 measurementRouter.post("/measurement", userAuthMidalware, async (req, res) => {
