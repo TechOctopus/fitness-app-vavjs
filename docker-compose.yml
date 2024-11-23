@@ -1,12 +1,12 @@
 services:
   db:
-    image: postgres
+    image: postgres:16
     restart: always
     shm_size: "128mb"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: app
+      POSTGRES_DB: postgres
     ports:
       - "5432"
     healthcheck:
@@ -36,7 +36,7 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
-      - "8080:80"
+      - "8080:8080"
     depends_on:
       - client
       - server

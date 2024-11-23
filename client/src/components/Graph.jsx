@@ -1,4 +1,3 @@
-import React from "react";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -10,6 +9,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { regressionLine } from "../helpers/regression";
 
 ChartJS.register(
   LinearScale,
@@ -21,83 +21,62 @@ ChartJS.register(
   Legend
 );
 
-// Function to calculate linear regression (y = mx + b)
-const calculateLinearRegression = (dates, values) => {
-  const n = dates.length;
-  const xValues = dates.map((_, i) => i); // Convert dates to sequential x-coordinates
+export default function Graph({ rawData }) {
+  const dates = [];
+  const values = [];
 
-  const xSum = xValues.reduce((sum, x) => sum + x, 0);
-  const ySum = values.reduce((sum, y) => sum + y, 0);
-  const xySum = xValues.reduce((sum, x, i) => sum + x * values[i], 0);
-  const xSquaredSum = xValues.reduce((sum, x) => sum + x * x, 0);
+  rawData.forEach((record) => {
+    dates.push(record.date);
+    values.push(Number(record.value));
+  });
 
-  const slope = (n * xySum - xSum * ySum) / (n * xSquaredSum - xSum * xSum);
-  const intercept = (ySum - slope * xSum) / n;
-
-  const regressionLine = xValues.map((x) => slope * x + intercept);
-  return regressionLine;
-};
-
-const Graph = ({ rawData }) => {
-  const data = rawData.map((point) => ({
-    date: point.date,
-    value: Number(point.value),
-  }));
-
-  const dates = data.map((point) => point.date);
-  const values = data.map((point) => point.value);
-
-  const regressionLine = calculateLinearRegression(dates, values);
-
-  const chartData = {
-    labels: dates,
-    datasets: [
-      {
-        label: "Original Data",
-        data: values,
-        borderColor: "blue",
-        backgroundColor: "rgba(0, 0, 255, 0.5)",
-        fill: false,
-      },
-      {
-        label: "Linear Regression",
-        data: regressionLine,
-        borderColor: "red",
-        borderDash: [5, 5],
-        fill: false,
-        pointRadius: 0,
-      },
-    ],
-  };
-
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top",
-      },
-      title: {
-        display: true,
-        text: "Linear Regression Chart",
-      },
-    },
-    scales: {
-      x: {
-        title: {
-          display: true,
-          text: "Date",
+  return (
+    <Line
+      data={{
+        labels: dates,
+        datasets: [
+          {
+            label: "Values",
+            data: values,
+            borderColor: "#16a34a",
+            fill: false,
+          },
+          {
+            label: "Linear Regression",
+            data: regressionLine(dates, values),
+            borderColor: "#dc2626",
+            borderDash: [5, 5],
+            fill: false,
+            pointRadius: 0,
+          },
+        ],
+      }}
+      options={{
+        responsive: true,
+        plugins: {
+          legend: {
+            position: "top",
+          },
+          title: {
+            display: true,
+            text: "Statistics",
+          },
         },
-      },
-      y: {
-        title: {
-          display: true,
-          text: "Value",
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: "Dates",
+            },
+          },
+          y: {
+            title: {
+              display: true,
+              text: "Values",
+            },
+          },
         },
-      },
-    },
-  };
-
-  return <Line data={chartData} options={options} />;
-};
-
-export default Graph;
+      }}
+    />
+  );
+}

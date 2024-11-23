@@ -28,9 +28,9 @@ export default function CreateUser({ callback, buttonText }) {
       <label htmlFor="password">Password</label>
       <input type="password" placeholder="Password" />
       <label htmlFor="age">Age</label>
-      <input type="number" placeholder="Age" />
+      <input type="number" placeholder="22" />
       <label htmlFor="height">Height</label>
-      <input type="number" placeholder="Height" />
+      <input type="number" placeholder="182" />
       <button type="submit">{buttonText}</button>
     </form>
   );

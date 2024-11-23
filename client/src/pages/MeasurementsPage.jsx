@@ -1,12 +1,19 @@
 import { useState, useEffect } from "react";
 import { api } from "../services/api";
 
+import MeasurementsTable from "../components/MeasurmentsTable";
+import FileTransfer from "../components/FileTransfer";
+
 export default function MeasurementsPage() {
   const [methods, setMethods] = useState([]);
+  const [measurements, setMeasurements] = useState([]);
 
   useEffect(() => {
     (async () => {
       await api("methods").then((methods) => setMethods(methods));
+      await api("measurements").then((measurements) =>
+        setMeasurements(measurements)
+      );
     })();
   }, []);
 
@@ -35,12 +42,19 @@ export default function MeasurementsPage() {
 
     event.target.reset();
 
-    await api("measurement", "POST", {
+    const result = await api("measurement", "POST", {
       measurement,
       methodId,
       value,
       date,
     });
+
+    if (result) {
+      const oldMeasurements = measurements;
+      oldMeasurements.push(result);
+      oldMeasurements.sort((a, b) => new Date(b.date) - new Date(a.date));
+      setMeasurements(oldMeasurements);
+    }
   }
 
   return (
@@ -72,6 +86,10 @@ export default function MeasurementsPage() {
 
         <button type="submit">Create</button>
       </form>
+
+      <h1 className="mt-5">Measurements</h1>
+      <FileTransfer domain={"measurements"} updateData={setMeasurements} />
+      <MeasurementsTable measurements={measurements} />
     </div>
   );
 }

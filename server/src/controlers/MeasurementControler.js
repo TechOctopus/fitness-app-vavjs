@@ -8,7 +8,7 @@ import { Op } from "sequelize";
 export const measurementRouter = Router();
 
 measurementRouter.get("/measurements", userAuthMidalware, async (req, res) => {
-  const { filter, methodName, startDate, endDate } = req.query;
+  const { filter = "all", methodName, startDate, endDate } = req.query;
 
   const optObj = {
     where: { user_id: req.user.id },
@@ -79,38 +79,236 @@ measurementRouter.get("/measurements", userAuthMidalware, async (req, res) => {
       );
       break;
     }
+
+    default: {
+      const weights = await Weight.findAll(optObj);
+      const systolics = await Systolic.findAll(optObj);
+      const diastolics = await Diastolic.findAll(optObj);
+
+      const measurements = [
+        ...weights.map((w) => {
+          return {
+            name: "Weight",
+            value: w.value,
+            date: w.date,
+            method: w.Method.name,
+          };
+        }),
+        ...systolics.map((s) => {
+          return {
+            name: "Systolic pressure",
+            value: s.value,
+            date: s.date,
+            method: s.Method.name,
+          };
+        }),
+        ...diastolics.map((d) => {
+          return {
+            name: "Diastolic pressure",
+            value: d.value,
+            date: d.date,
+            method: d.Method.name,
+          };
+        }),
+      ].sort((a, b) => {
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+        return dateA - dateB;
+      });
+
+      res.json(measurements);
+    }
   }
 });
 
 measurementRouter.post("/measurement", userAuthMidalware, async (req, res) => {
   const { measurement, methodId, value, date } = req.body;
 
+  const method = await Method.findByPk(methodId);
+  if (!method) {
+    res.status(400).json({ error: "Method not found" });
+    return;
+  }
+
   switch (measurement) {
-    case "weight":
+    case "weight": {
       await Weight.create({
         user_id: req.user.id,
         method_id: methodId,
         value,
         date,
       });
+
+      res.json({
+        name: "Weight",
+        value,
+        date,
+        method: method.name,
+      });
+
       break;
-    case "systolic":
+    }
+
+    case "systolic": {
       await Systolic.create({
         user_id: req.user.id,
         method_id: methodId,
         value,
         date,
       });
+
+      res.json({
+        name: "Systolic pressure",
+        value,
+        date,
+        method: method.name,
+      });
+
       break;
-    case "diastolic":
+    }
+
+    case "diastolic": {
       await Diastolic.create({
         user_id: req.user.id,
         method_id: methodId,
         value,
         date,
       });
-      break;
-  }
 
-  res.json({ message: "Measurement created" });
+      res.json({
+        name: "Diastolic pressure",
+        value,
+        date,
+        method: method.name,
+      });
+
+      break;
+    }
+  }
 });
+
+measurementRouter.get(
+  "/measurements/export",
+  userAuthMidalware,
+  async (req, res) => {
+    const optObj = {
+      where: { user_id: req.user.id },
+      include: [
+        {
+          model: Method,
+          attributes: ["name"],
+        },
+      ],
+    };
+
+    const weights = await Weight.findAll(optObj);
+    const systolics = await Systolic.findAll(optObj);
+    const diastolics = await Diastolic.findAll(optObj);
+
+    const measurements = [
+      ...weights.map((w) => {
+        return {
+          name: "Weight",
+          value: w.value,
+          date: w.date,
+          method: w.Method.name,
+        };
+      }),
+      ...systolics.map((s) => {
+        return {
+          name: "Systolic pressure",
+          value: s.value,
+          date: s.date,
+          method: s.Method.name,
+        };
+      }),
+      ...diastolics.map((d) => {
+        return {
+          name: "Diastolic pressure",
+          value: d.value,
+          date: d.date,
+          method: d.Method.name,
+        };
+      }),
+    ].sort((a, b) => {
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      return dateA - dateB;
+    });
+
+    const csv = measurements
+      .map((m) => `${m.name},${m.value},${m.date},${m.method}`)
+      .join("\n");
+
+    res.set("Content-Type", "text/csv");
+    res.send(csv);
+  }
+);
+
+measurementRouter.post(
+  "/measurements/import",
+  userAuthMidalware,
+  async (req, res) => {
+    const { data } = req.body;
+
+    // Delete all user measurements
+    await Weight.destroy({ where: { user_id: req.user.id } });
+    await Systolic.destroy({ where: { user_id: req.user.id } });
+    await Diastolic.destroy({ where: { user_id: req.user.id } });
+
+    const measurements = data
+      .split("\n")
+      .map((line) => line.split(","))
+      .map(([name, value, date, method]) => ({
+        name,
+        value,
+        date,
+        method,
+      }));
+
+    for (const m of measurements) {
+      const method = await Method.findOne({ where: { name: m.method } });
+      if (!method) {
+        res.status(400).json({ error: "Method not found" });
+        return;
+      }
+
+      switch (m.name) {
+        case "Weight": {
+          await Weight.create({
+            user_id: req.user.id,
+            method_id: method.id,
+            value: m.value,
+            date: m.date,
+          });
+
+          break;
+        }
+
+        case "Systolic pressure": {
+          await Systolic.create({
+            user_id: req.user.id,
+            method_id: method.id,
+            value: m.value,
+            date: m.date,
+          });
+
+          break;
+        }
+
+        case "Diastolic pressure": {
+          await Diastolic.create({
+            user_id: req.user.id,
+            method_id: method.id,
+            value: m.value,
+            date: m.date,
+          });
+
+          break;
+        }
+      }
+    }
+
+    res.json(measurements);
+  }
+);

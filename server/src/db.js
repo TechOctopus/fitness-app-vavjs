@@ -33,8 +33,7 @@ const User = sequelize.define(
       type: DataTypes.INTEGER,
     },
     height: {
-      type: DataTypes.DECIMAL(5, 2),
-      allowNull: true,
+      type: DataTypes.INTEGER,
     },
   },
   {
@@ -74,7 +73,7 @@ const Weight = sequelize.define(
       type: DataTypes.DATEONLY,
     },
     value: {
-      type: DataTypes.DECIMAL(10, 2),
+      type: DataTypes.INTEGER,
     },
     method_id: {
       type: DataTypes.INTEGER,
@@ -245,8 +244,18 @@ async function connectToDB() {
     });
 
     await Method.create({
-      name: "Manual",
-      description: "Measurements done manually",
+      name: "Swimming",
+      description: "Swimming in the pool",
+    });
+
+    await Method.create({
+      name: "Running",
+      description: "Running in the park",
+    });
+
+    await Method.create({
+      name: "Walking",
+      description: "Walking in the park",
     });
 
     await Weight.create({
@@ -267,14 +276,14 @@ async function connectToDB() {
       date: new Date("2022-01-03"),
       value: 70,
       user_id: 1,
-      method_id: 1,
+      method_id: 2,
     });
 
     await Weight.create({
       date: new Date("2004-01-03"),
       value: 10,
       user_id: 1,
-      method_id: 1,
+      method_id: 2,
     });
 
     await Weight.create({
@@ -295,10 +304,8 @@ async function connectToDB() {
       date: new Date("2001-01-03"),
       value: 4,
       user_id: 1,
-      method_id: 1,
+      method_id: 3,
     });
-
-    console.log("Connection has been established successfully.");
   } catch (error) {
     console.error("Unable to connect to the database:", error);
   }
