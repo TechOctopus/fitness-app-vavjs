@@ -1,0 +1,14 @@
+{
+  "name": "tests",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "Heorhi Davydau",
+  "license": "MIT",
+  "description": "",
+  "dependencies": {
+    "mocha": "^10.8.2"
+  }
+}
