@@ -1,9 +1,6 @@
-// This test is inspired by the following article:
-// https://medium.com/@cofiali53/automation-api-testing-in-javascript-using-mocha-chai-and-supertest-a-beginners-guide-47e317e04501
-
 var assert = require("assert");
 
-const API_URL = "http://localhost:8080/api";
+const API_URL = "http://server:3333";
 const SUCCESS_HTTP_STATUS = 200;
 
 describe("E2E tests", () => {

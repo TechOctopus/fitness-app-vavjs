@@ -47,6 +47,10 @@ Pouzivatelia: id, e-mail (unikatny), meno, heslo, vek, vyska
 Metody: id, nazov, popis
 Reklama: link k obrazku, link na ciel, pocitadlo
 DB musi byt vytvorena pri build/up, neodovzdavate volume ani vlastny image DB.
+Nie je to podmienkou, ale pre urychlenie hodnotenia Vas prosim pouzit nasledujuce Docker Image:
+postgres:17.2
+mysql:9.1
+mariadb:11.6
 
 # Rozhranie pouzivatel
 stranky merani - vlozit merania (samostatne), importovat merania z CSV (datum YYYY-MM-DD, hodnota, typ (vaha/[2nd param]/[3rd param]), metoda), exportovat merania do CSV
