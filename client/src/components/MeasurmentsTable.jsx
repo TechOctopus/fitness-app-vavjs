@@ -17,7 +17,9 @@ export default function MeasurmentsTable({ measurements }) {
         )}
         {measurements.length !== 0 &&
           measurements.map((measurement) => (
-            <tr key={`${measurement.date}-${measurement.name}`}>
+            <tr
+              key={`${measurement.date}-${measurement.name}-${measurement.value}`}
+            >
               <td>{measurement.date}</td>
               <td>{measurement.method}</td>
               <td>{measurement.name}</td>

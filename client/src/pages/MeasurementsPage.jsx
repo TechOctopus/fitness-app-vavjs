@@ -50,10 +50,11 @@ export default function MeasurementsPage() {
     });
 
     if (result) {
-      const oldMeasurements = measurements;
-      oldMeasurements.push(result);
-      oldMeasurements.sort((a, b) => new Date(b.date) - new Date(a.date));
-      setMeasurements(oldMeasurements);
+      setMeasurements((measurements) =>
+        [...measurements, result].sort(
+          (a, b) => new Date(b.date) - new Date(a.date)
+        )
+      );
     }
   }
 
