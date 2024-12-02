@@ -19,7 +19,6 @@ export default function AdPage() {
 
   async function handleClick() {
     await api("ad/click", "POST");
-    window.open(ad.target_url, "_blank");
     setAdDialog(!adDialog);
   }
 
@@ -41,7 +40,6 @@ export default function AdPage() {
               <a
                 href={ad.target_url}
                 target="_blank"
-                rel="noreferrer"
                 onClick={handleClick}
                 className="text-blue-500 hover:text-blue-700 underline"
               >
