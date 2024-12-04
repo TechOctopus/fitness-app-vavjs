@@ -43,23 +43,31 @@ userRouter.post("/users/import", adminAuthMidalware, async (req, res) => {
 });
 
 userRouter.post("/user", adminAuthMidalware, async (req, res) => {
-  const { email, name, password, age, height } = req.body;
-  const user = await User.create({
-    email,
-    name,
-    password: hash(password),
-    age,
-    height,
-  });
-  res.json(user);
+  try {
+    const { email, name, password, age, height } = req.body;
+    const user = await User.create({
+      email,
+      name,
+      password: hash(password),
+      age,
+      height,
+    });
+    res.json(user);
+  } catch (error) {
+    res.status(400).json({ message: "error" });
+  }
 });
 
 userRouter.delete("/user/:id", adminAuthMidalware, async (req, res) => {
-  const user = await User.findByPk(req.params.id);
-  if (!user) {
-    return res.status(404).json({ message: "not found" });
-  }
+  try {
+    const user = await User.findByPk(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "not found" });
+    }
 
-  await user.destroy();
-  res.json(user);
+    await user.destroy();
+    res.json(user);
+  } catch (error) {
+    res.status(400).json({ message: "error" });
+  }
 });

@@ -202,13 +202,13 @@ Systolic.belongsTo(User, { foreignKey: "user_id" });
 User.hasMany(Diastolic, { foreignKey: "user_id" });
 Diastolic.belongsTo(User, { foreignKey: "user_id" });
 
-Method.hasMany(Weight, { foreignKey: "method_id" });
+Method.hasMany(Weight, { foreignKey: "method_id", onDelete: "CASCADE" });
 Weight.belongsTo(Method, { foreignKey: "method_id" });
 
-Method.hasMany(Systolic, { foreignKey: "method_id" });
+Method.hasMany(Systolic, { foreignKey: "method_id", onDelete: "CASCADE" });
 Systolic.belongsTo(Method, { foreignKey: "method_id" });
 
-Method.hasMany(Diastolic, { foreignKey: "method_id" });
+Method.hasMany(Diastolic, { foreignKey: "method_id", onDelete: "CASCADE" });
 Diastolic.belongsTo(Method, { foreignKey: "method_id" });
 
 async function connectToDB() {

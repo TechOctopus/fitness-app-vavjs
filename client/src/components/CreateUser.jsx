@@ -13,8 +13,9 @@ export default function CreateUser({ callback, buttonText }) {
       !password.trim() ||
       !age.trim() ||
       !height.trim()
-    )
+    ) {
       return;
+    }
 
     await callback({ email, name, password, age, height });
   }
@@ -22,15 +23,21 @@ export default function CreateUser({ callback, buttonText }) {
   return (
     <form onSubmit={async (event) => await handleCreate(event)}>
       <label htmlFor="email">Email</label>
-      <input type="email" placeholder="Email" />
+      <input type="email" placeholder="Email" required />
       <label htmlFor="name">Name</label>
-      <input type="text" placeholder="Name" />
+      <input type="text" placeholder="Name" required />
       <label htmlFor="password">Password</label>
-      <input type="password" placeholder="Password" />
+      <input
+        type="password"
+        placeholder="Password"
+        required
+        minLength="1"
+        maxLength="8"
+      />
       <label htmlFor="age">Age</label>
-      <input type="number" placeholder="22" />
+      <input type="number" placeholder="22" required min="1" max="150" />
       <label htmlFor="height">Height</label>
-      <input type="number" placeholder="182" />
+      <input type="number" placeholder="182" required min="1" max="250" />
       <button type="submit">{buttonText}</button>
     </form>
   );

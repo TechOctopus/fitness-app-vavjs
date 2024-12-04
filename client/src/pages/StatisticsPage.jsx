@@ -28,6 +28,10 @@ export default function StatisticsPage() {
       await api(
         `measurements?filter=${filter.name}&methodName=${filter.methodName}&startDate=${filter.startDate}&endDate=${filter.endDate}`
       ).then((data) => {
+        if (data === undefined) {
+          return;
+        }
+
         setMeasurements(data);
         const startDate =
           data.length === 0

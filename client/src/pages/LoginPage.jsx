@@ -23,9 +23,9 @@ export default function LoginPage() {
       <h1>Login</h1>
       <form onSubmit={(event) => handleLogin(event)}>
         <label htmlFor="email">Email</label>
-        <input type="text" placeholder="Email" />
+        <input type="text" placeholder="Email" required />
         <label htmlFor="password">Password</label>
-        <input type="password" placeholder="Password" />
+        <input type="password" placeholder="Password" required />
         <button type="submit">Login</button>
       </form>
       <Link to="/register" className="pt-4">
